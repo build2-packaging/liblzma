@@ -40,7 +40,6 @@ if ($c.target.class == 'windows')
 {
     c.poptions += "-DMYTHREAD_VISTA"
     objs{**}: c.poptions += "-DDLL_EXPORT"
-    liba{lzma}: cc.export.poptions += "-DLZMA_API_STATIC"
 }
 else
 {
@@ -75,6 +74,11 @@ lib{lzma}: \
     src/liblzma/simple/{h c}{**}
 {
     cc.export.poptions += "-I$src_base/src/liblzma/api"
+}
+
+if ($c.target.class == 'windows')
+{
+    liba{lzma}: cc.export.poptions += "-DLZMA_API_STATIC"
 }
 
 h{**}: install = false
