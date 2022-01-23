@@ -44,7 +44,9 @@ if ($c.target.class == 'windows')
 else
 {
     c.poptions += "-DMYTHREAD_POSIX"
-    c.libs += "-lpthread" "-lrt"
+    c.libs += "-lpthread"
+    if ($c.target.class != 'macos')
+        c.libs += "-lrt"
 }
 
 c.poptions += \
