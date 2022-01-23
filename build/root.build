@@ -1,0 +1,7 @@
+using c
+
+h{*}: extension = h
+c{*}: extension = c
+
+h{*}: c.importable = true
+test.target = $c.target

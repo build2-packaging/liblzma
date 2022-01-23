@@ -1,0 +1,46 @@
+import libs = liblzma%lib{lzma}
+
+c.poptions += \
+    "-DPACKAGE_NAME=\"XZ Utils\"" \
+    "-DPACKAGE_BUGREPORT=\"lasse.collin@tukaani.org\"" \
+    "-DPACKAGE_URL=\"https://tukaani.org/xz/\"" \
+    "-DHAVE_CHECK_CRC32" \
+    "-DHAVE_CHECK_CRC64" \
+    "-DHAVE_CHECK_SHA256" \
+    "-DHAVE_DECODERS" \
+    "-DHAVE_DECODER_ARM" \
+    "-DHAVE_DECODER_ARMTHUMB" \
+    "-DHAVE_DECODER_DELTA" \
+    "-DHAVE_DECODER_IA64" \
+    "-DHAVE_DECODER_LZMA1" \
+    "-DHAVE_DECODER_LZMA2" \
+    "-DHAVE_DECODER_POWERPC" \
+    "-DHAVE_DECODER_SPARC" \
+    "-DHAVE_DECODER_X86" \
+    "-DHAVE_ENCODERS" \
+    "-DHAVE_ENCODER_ARM" \
+    "-DHAVE_ENCODER_ARMTHUMB" \
+    "-DHAVE_ENCODER_DELTA" \
+    "-DHAVE_ENCODER_IA64" \
+    "-DHAVE_ENCODER_LZMA1" \
+    "-DHAVE_ENCODER_LZMA2" \
+    "-DHAVE_ENCODER_POWERPC" \
+    "-DHAVE_ENCODER_SPARC" \
+    "-DHAVE_ENCODER_X86" \
+    "-DHAVE_MF_BT2" \
+    "-DHAVE_MF_BT3" \
+    "-DHAVE_MF_BT4" \
+    "-DHAVE_MF_HC3" \
+    "-DHAVE_MF_HC4" \
+    "-DHAVE_STDBOOL_H" \
+    "-DHAVE__BOOL" \
+    "-DHAVE_STDINT_H" \
+    "-DHAVE_INTTYPES_H" \
+    "-DHAVE_IMMINTRIN_H"
+
+c.poptions += "-I$src_base"
+
+for t: test_bcj_exact_size test_block_header test_check test_filter_flags test_index test_stream_flags
+{
+    ./: exe{$t}: h{*} tests/h{tests} tests/c{$t} $libs
+}

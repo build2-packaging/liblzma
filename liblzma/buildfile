@@ -1,0 +1,86 @@
+c.poptions += \
+    "-DPACKAGE_NAME=\"XZ Utils\"" \
+    "-DPACKAGE_BUGREPORT=\"lasse.collin@tukaani.org\"" \
+    "-DPACKAGE_URL=\"https://tukaani.org/xz/\"" \
+    "-DHAVE_CHECK_CRC32" \
+    "-DHAVE_CHECK_CRC64" \
+    "-DHAVE_CHECK_SHA256" \
+    "-DHAVE_DECODERS" \
+    "-DHAVE_DECODER_ARM" \
+    "-DHAVE_DECODER_ARMTHUMB" \
+    "-DHAVE_DECODER_DELTA" \
+    "-DHAVE_DECODER_IA64" \
+    "-DHAVE_DECODER_LZMA1" \
+    "-DHAVE_DECODER_LZMA2" \
+    "-DHAVE_DECODER_POWERPC" \
+    "-DHAVE_DECODER_SPARC" \
+    "-DHAVE_DECODER_X86" \
+    "-DHAVE_ENCODERS" \
+    "-DHAVE_ENCODER_ARM" \
+    "-DHAVE_ENCODER_ARMTHUMB" \
+    "-DHAVE_ENCODER_DELTA" \
+    "-DHAVE_ENCODER_IA64" \
+    "-DHAVE_ENCODER_LZMA1" \
+    "-DHAVE_ENCODER_LZMA2" \
+    "-DHAVE_ENCODER_POWERPC" \
+    "-DHAVE_ENCODER_SPARC" \
+    "-DHAVE_ENCODER_X86" \
+    "-DHAVE_MF_BT2" \
+    "-DHAVE_MF_BT3" \
+    "-DHAVE_MF_BT4" \
+    "-DHAVE_MF_HC3" \
+    "-DHAVE_MF_HC4" \
+    "-DHAVE_STDBOOL_H" \
+    "-DHAVE__BOOL" \
+    "-DHAVE_STDINT_H" \
+    "-DHAVE_INTTYPES_H" \
+    "-DHAVE_IMMINTRIN_H"
+
+if ($c.target.class == 'windows')
+{
+    c.poptions += "-DMYTHREAD_VISTA"
+    objs{**}: c.poptions += "-DDLL_EXPORT"
+    liba{lzma}: cc.export.poptions += "-DLZMA_API_STATIC"
+}
+else
+{
+    c.poptions += "-DMYTHREAD_POSIX"
+    c.libs += "-lpthread" "-lrt"
+}
+
+c.poptions += \
+    "-I$src_base/src/liblzma/api" \
+    "-I$src_base/src/liblzma/common" \
+    "-I$src_base/src/liblzma/check" \
+    "-I$src_base/src/liblzma/lz" \
+    "-I$src_base/src/liblzma/rangecoder" \
+    "-I$src_base/src/liblzma/lzma" \
+    "-I$src_base/src/liblzma/delta" \
+    "-I$src_base/src/liblzma/simple" \
+    "-I$src_base/src/common"
+
+objs{**}: c.poptions += "-DHAVE_VISIBILITY"
+
+lib{lzma}: \
+    src/common/h{mythread sysdefs tuklib_common tuklib_config tuklib_integer} \
+    src/common/{h c}{tuklib_cpucores tuklib_physmem} \
+    src/liblzma/api/h{**} \
+    src/liblzma/check/h{check crc32_table_be crc32_table_le crc64_table_be crc64_table_le crc_macros} \
+    src/liblzma/check/c{check crc32_fast crc32_table crc64_fast crc64_table sha256} \
+    src/liblzma/common/{h c}{**} \
+    src/liblzma/delta/{h c}{**} \
+    src/liblzma/lz/{h c}{**} \
+    src/liblzma/lzma/{h c}{** -fastpos_tablegen} \
+    src/liblzma/rangecoder/{h c}{** -price_tablegen} \
+    src/liblzma/simple/{h c}{**}
+{
+    cc.export.poptions += "-I$src_base/src/liblzma/api"
+}
+
+h{**}: install = false
+
+src/liblzma/api/h{**}:
+{
+    install = include/
+    install.subdirs = true
+}

@@ -1,0 +1,6 @@
+$out_root/
+{
+  include liblzma/
+}
+
+export $out_root/liblzma/$import.target
